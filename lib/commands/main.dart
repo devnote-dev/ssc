@@ -1,8 +1,12 @@
 import 'package:args/args.dart';
 import 'package:args/command_runner.dart';
 
-class MainCommand extends CommandRunner<int> {
-  MainCommand() : super('ssc', 'Scratch Script Compiler');
+import 'compile.dart';
+
+final class MainCommand extends CommandRunner<int> {
+  MainCommand() : super('ssc', 'Scratch Script Compiler') {
+    addCommand(CompileCommand());
+  }
 
   @override
   Future<int> runCommand(ArgResults topLevelResults) async {
