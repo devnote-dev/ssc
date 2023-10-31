@@ -1,0 +1,15 @@
+name: ssc
+description: A sample command-line application.
+version: 1.0.0
+repository: https://github.com/devnote-dev/ssc
+
+environment:
+  sdk: ^3.0.7
+
+dependencies:
+  ansicolor: ^2.0.2
+  args: ^2.4.2
+
+dev_dependencies:
+  lints: ^2.0.0
+  test: ^1.21.0

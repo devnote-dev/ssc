@@ -1,0 +1,14 @@
+include: package:lints/recommended.yaml
+
+linter:
+  rules:
+    - camel_case_types
+    - cascade_invocations
+    - combinators_ordering
+
+# analyzer:
+#   exclude:
+#     - path/to/excluded/files/**
+
+# https://dart.dev/go/core-lints
+# https://dart.dev/guides/language/analysis-options
