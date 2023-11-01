@@ -11,14 +11,17 @@ final class Parser {
   List<Statement> parse() {
     final stmts = <Statement>[];
 
-    while (_remaining()) {
-      stmts.add(_parse(_next()));
+    while (true) {
+      final stmt = _parse(_next());
+      if (stmt == null) break;
+      stmts.add(stmt);
     }
 
     return stmts;
   }
 
-  Statement _parse(Token token) => switch (token.kind) {
+  Statement? _parse(Token token) => switch (token.kind) {
+        TokenKind.eof => null,
         TokenKind.set => _parseSet(),
         TokenKind.space || TokenKind.newline => _parse(_next()),
         _ => _parseExpressionStatement(),
@@ -49,18 +52,22 @@ final class Parser {
   Statement _parseExpressionStatement() {
     final expr = _parseExpression(Precedence.lowest);
 
-    return ExpressionStatement(expr!);
+    return ExpressionStatement(expr);
   }
 
-  Expression? _parseExpression(Precedence prec) {
+  Expression _parseExpression(Precedence prec) {
     var left = _parsePrefixType(_current);
     if (left == null) {
       throw ParseException('Cannot parse prefix type for ${_current.kind}');
     }
 
-    while (_remaining()) {
-      final peek = _peek()!;
-      if (prec >= Precedence.from(peek.kind)) break;
+    while (true) {
+      if (_current.kind == TokenKind.eof) {
+        throw ParseException('Unexpected End of File');
+      }
+
+      final peek = _peek();
+      if (peek == null || prec >= Precedence.from(peek.kind)) break;
 
       final infix = _parseInfixType(peek, left!);
       if (infix == null) break;
@@ -68,7 +75,7 @@ final class Parser {
       left = infix;
     }
 
-    return left;
+    return left!;
   }
 
   Expression? _parsePrefixType(Token token) => switch (token.kind) {
@@ -102,4 +109,7 @@ final class ParseException implements Exception {
   final String message;
 
   const ParseException(this.message);
+
+  @override
+  String toString() => message;
 }
