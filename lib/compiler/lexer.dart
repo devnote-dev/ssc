@@ -1,5 +1,12 @@
 import 'token.dart';
 
+const _operators = {
+  42, // '*'
+  43, // '+'
+  45, // '-'
+  47, // '/'
+};
+
 final class Lexer {
   late final List<int> _input;
   int _index = -1;
@@ -23,6 +30,9 @@ final class Lexer {
           break;
         case 34 || 39:
           tokens.add(_lexString());
+          break;
+        case _ when _operators.contains(next):
+          tokens.add(_lexOperator());
           break;
         case >= 65 && <= 90 || >= 97 && <= 122:
           tokens.add(_lexIdent());
@@ -81,6 +91,20 @@ final class Lexer {
     } else {
       return Token(TokenKind.illegal, 'unexpected end of file');
     }
+  }
+
+  Token _lexOperator() {
+    final start = _index;
+    while (_remaining() && _operators.contains(_next())) {}
+
+    final value = _getRange(start, _index);
+    return switch (value) {
+      '+' => Token(TokenKind.plus),
+      '-' => Token(TokenKind.minus),
+      '*' => Token(TokenKind.asterisk),
+      '/' => Token(TokenKind.slash),
+      _ => Token(TokenKind.illegal, 'Invalid operator: $value'),
+    };
   }
 
   int _next() => _input[++_index];

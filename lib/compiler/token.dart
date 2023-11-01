@@ -3,6 +3,12 @@ enum TokenKind {
   ident,
   string,
 
+  /// Operators
+  plus,
+  minus,
+  asterisk,
+  slash,
+
   /// Declarations
   // get,
   set,
@@ -51,6 +57,10 @@ enum TokenKind {
   String toString() => switch (this) {
         ident => 'identifier',
         string => 'string',
+        plus => 'plus',
+        minus => 'minus',
+        asterisk => 'asterisk',
+        slash => 'slash',
         set => 'set',
         to => 'to',
         space => 'space',
