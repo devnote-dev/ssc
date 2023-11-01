@@ -1,6 +1,7 @@
 import 'package:args/command_runner.dart';
 
 import '../compiler/lexer.dart';
+import '../compiler/parser.dart';
 
 final class CompileCommand extends Command<int> {
   @override
@@ -18,7 +19,11 @@ final class CompileCommand extends Command<int> {
 
     // print(argResults!.arguments);
     final lexer = Lexer(argResults!.arguments.join(' '));
-    print(lexer.lex());
+    final tokens = lexer.lex();
+    print(tokens);
+
+    final parser = Parser(tokens);
+    print(parser.parse());
 
     return 0;
   }
