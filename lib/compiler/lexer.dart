@@ -34,6 +34,8 @@ final class Lexer {
       }
     }
 
+    tokens.add(Token(TokenKind.eof));
+
     return tokens;
   }
 
