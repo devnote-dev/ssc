@@ -38,8 +38,8 @@ final class Lexer {
           tokens.add(_lexIdent());
           break;
         default:
-          tokens.add(Token(TokenKind.illegal, String.fromCharCode(next)));
-          _index++;
+          tokens.add(Token(TokenKind.illegal,
+              "Unexpected token: ${String.fromCharCode(next)}"));
           break;
       }
     }

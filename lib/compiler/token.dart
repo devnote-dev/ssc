@@ -51,7 +51,8 @@ enum TokenKind {
   illegal,
   eof;
 
-  bool get needsQuotes => this == ident || this == string || this == illegal;
+  bool get needsQuotes =>
+      this == ident || this == string || this == space || this == illegal;
 
   @override
   String toString() => switch (this) {
