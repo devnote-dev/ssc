@@ -64,7 +64,7 @@ final class Token {
   final TokenKind kind;
   final String? value;
 
-  Token(this.kind, [this.value]);
+  const Token(this.kind, [this.value]);
 
   @override
   bool operator ==(Object other) {
@@ -91,4 +91,17 @@ final class Token {
 
     return buffer.toString();
   }
+}
+
+enum Precedence {
+  lowest,
+  equals,
+  lessGreater,
+  sum,
+  product,
+  prefix;
+
+  static Precedence from(TokenKind kind) => lowest;
+
+  bool operator >=(Precedence other) => index >= other.index;
 }
