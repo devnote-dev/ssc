@@ -112,7 +112,11 @@ enum Precedence {
   product,
   prefix;
 
-  static Precedence from(TokenKind kind) => lowest;
+  static Precedence from(TokenKind kind) => switch (kind) {
+        TokenKind.plus || TokenKind.minus => sum,
+        TokenKind.asterisk || TokenKind.slash => product,
+        _ => lowest,
+      };
 
   bool operator >=(Precedence other) => index >= other.index;
 }
