@@ -1,7 +1,6 @@
 import 'package:args/command_runner.dart';
 
-import '../compiler/lexer.dart';
-import '../compiler/parser.dart';
+import 'package:ssc/ssc.dart';
 
 final class CompileCommand extends Command<int> {
   @override

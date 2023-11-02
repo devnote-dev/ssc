@@ -1,4 +1,4 @@
-import 'ast.dart';
+import '../syntax/ast.dart';
 
 final class Visitor {
   final List<Statement> _input;
