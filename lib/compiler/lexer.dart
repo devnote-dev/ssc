@@ -92,7 +92,7 @@ final class Lexer {
     if (closed) {
       return Token(TokenKind.string, _getRange(start, _index++));
     } else {
-      return Token(TokenKind.illegal, 'unexpected end of file');
+      return Token(TokenKind.illegal, 'Unterminated quote string');
     }
   }
 
