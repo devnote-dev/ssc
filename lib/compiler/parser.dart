@@ -79,6 +79,8 @@ final class Parser {
   Expression? _parsePrefixType(Token token) => switch (token.kind) {
         TokenKind.ident => _parseIdentifier(token),
         TokenKind.string => _parseString(token),
+        TokenKind.integer => _parseInteger(token),
+        TokenKind.float => _parseFloat(token),
         _ => null,
       };
 
@@ -158,6 +160,12 @@ final class Parser {
   }
 
   Expression _parseString(Token token) => StringLiteral(token.value!);
+
+  Expression _parseInteger(Token token) =>
+      IntegerLiteral(int.parse(token.value!));
+
+  Expression _parseFloat(Token token) =>
+      FloatLiteral(double.parse(token.value!));
 
   Token get _current => _input[_index];
   Token? _peek() => _remaining() ? _input[_index + 1] : null;

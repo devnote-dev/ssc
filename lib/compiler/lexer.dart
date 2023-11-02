@@ -38,6 +38,9 @@ final class Lexer {
         case 44:
           tokens.add(Token(TokenKind.comma));
           break;
+        case >= 48 && <= 57:
+          tokens.add(_lexNumber());
+          break;
         case _ when _operators.contains(next):
           tokens.add(_lexOperator());
           break;
@@ -66,12 +69,11 @@ final class Lexer {
 
     while (_remaining()) {
       final next = _next();
-
       if (next >= 65 && next <= 90 || next >= 97 && next <= 122) continue;
       break;
     }
-
     final value = _getRange(start, _index--);
+
     return switch (value) {
       'set' => Token(TokenKind.set),
       'to' => Token(TokenKind.to),
@@ -98,11 +100,29 @@ final class Lexer {
     }
   }
 
+  Token _lexNumber() {
+    final start = _index;
+    var float = false;
+
+    while (_remaining()) {
+      final next = _next();
+      if (next >= 48 && next <= 57) continue;
+      if (next == 46) {
+        if (float) return Token(TokenKind.illegal, 'Invalid float number');
+        float = true;
+      }
+      break;
+    }
+    final kind = float ? TokenKind.float : TokenKind.integer;
+
+    return Token(kind, _getRange(start, _index--));
+  }
+
   Token _lexOperator() {
     final start = _index;
     while (_remaining() && _operators.contains(_next())) {}
 
-    final value = _getRange(start, _index);
+    final value = _getRange(start, _index--);
     return switch (value) {
       '+' => Token(TokenKind.plus),
       '-' => Token(TokenKind.minus),

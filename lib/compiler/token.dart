@@ -2,6 +2,8 @@ enum TokenKind {
   /// Primitives
   ident,
   string,
+  integer,
+  float,
 
   /// Operators
   plus,
@@ -59,6 +61,8 @@ enum TokenKind {
   String toString() => switch (this) {
         ident => 'identifier',
         string => 'string',
+        integer => 'integer',
+        float => 'float',
         plus => 'plus',
         minus => 'minus',
         asterisk => 'asterisk',

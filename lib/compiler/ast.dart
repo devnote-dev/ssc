@@ -46,6 +46,30 @@ final class StringLiteral implements Expression {
   }
 }
 
+final class IntegerLiteral implements Expression {
+  final int value;
+
+  const IntegerLiteral(this.value);
+
+  @override
+  String type() => 'integer';
+
+  @override
+  String toString() => value.toString();
+}
+
+final class FloatLiteral implements Expression {
+  final double value;
+
+  const FloatLiteral(this.value);
+
+  @override
+  String type() => 'float';
+
+  @override
+  String toString() => value.toString();
+}
+
 final class Call implements Expression {
   final Expression function;
   final List<Expression> args;
