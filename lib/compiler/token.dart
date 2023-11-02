@@ -46,6 +46,7 @@ enum TokenKind {
   // try,
   // catch,
 
+  comma,
   space,
   newline,
   illegal,
@@ -64,6 +65,7 @@ enum TokenKind {
         slash => 'slash',
         set => 'set',
         to => 'to',
+        comma => 'comma',
         space => 'space',
         newline => 'newline',
         illegal => 'illegal',

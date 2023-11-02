@@ -31,6 +31,9 @@ final class Lexer {
         case 34 || 39:
           tokens.add(_lexString());
           break;
+        case 44:
+          tokens.add(Token(TokenKind.comma));
+          break;
         case _ when _operators.contains(next):
           tokens.add(_lexOperator());
           break;
