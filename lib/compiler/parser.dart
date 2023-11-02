@@ -64,10 +64,10 @@ final class Parser {
     while (true) {
       if (_current.kind == TokenKind.eof) break;
 
-      final peek = _peek();
-      if (peek == null || prec >= Precedence.from(peek.kind)) break;
+      final next = _nextNoSpace();
+      if (prec >= Precedence.from(next.kind)) break;
 
-      final infix = _parseInfixType(peek.kind, left!);
+      final infix = _parseInfixType(next.kind, left!);
       if (infix == null) break;
 
       left = infix;
@@ -95,7 +95,6 @@ final class Parser {
       };
 
   Expression _parseInfix(TokenKind kind, Expression left) {
-    _nextNoSpace(); // skip the current operator token
     final op = switch (kind) {
       TokenKind.plus => Operator.add,
       TokenKind.minus => Operator.subtract,
