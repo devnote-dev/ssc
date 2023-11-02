@@ -55,6 +55,35 @@ final class Call implements Expression {
   String toString() => function.toString();
 }
 
+enum Operator {
+  add,
+  subtract,
+  multiply,
+  divide;
+
+  @override
+  String toString() => switch (this) {
+        add => '+',
+        subtract => '-',
+        multiply => '*',
+        divide => '/',
+      };
+}
+
+final class Infix implements Expression {
+  final Expression left;
+  final Operator operator;
+  final Expression right;
+
+  const Infix(this.left, this.operator, this.right);
+
+  @override
+  String type() => 'infix';
+
+  @override
+  String toString() => '$left $operator $right';
+}
+
 final class SetType implements Statement {
   final Identifier name;
   final Identifier typeName;
