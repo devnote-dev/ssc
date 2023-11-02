@@ -69,7 +69,7 @@ final class Parser {
       final peek = _peek();
       if (peek == null || prec >= Precedence.from(peek.kind)) break;
 
-      final infix = _parseInfixType(peek, left!);
+      final infix = _parseInfixType(peek.kind, left!);
       if (infix == null) break;
 
       left = infix;
@@ -84,7 +84,32 @@ final class Parser {
         _ => null,
       };
 
-  Expression? _parseInfixType(Token token, Expression expr) => null;
+  Expression? _parseInfixType(TokenKind kind, Expression expr) =>
+      switch (kind) {
+        TokenKind.plus ||
+        TokenKind.minus ||
+        TokenKind.asterisk ||
+        TokenKind.slash =>
+          _parseInfix(kind, expr),
+        _ => null,
+      };
+
+  Expression _parseInfix(TokenKind kind, Expression left) {
+    _nextNoSpace(); // skip the current operator token
+    final op = switch (kind) {
+      TokenKind.plus => Operator.add,
+      TokenKind.minus => Operator.subtract,
+      TokenKind.asterisk => Operator.multiply,
+      TokenKind.slash => Operator.divide,
+      _ => throw 'unreachable',
+    };
+
+    final token = _nextNoSpace();
+    final prec = Precedence.from(token.kind);
+    final right = _parseExpression(prec);
+
+    return Infix(left, op, right);
+  }
 
   Expression _parseIdentifier(Token token) => Identifier(token.value!);
 
