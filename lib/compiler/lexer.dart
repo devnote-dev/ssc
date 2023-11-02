@@ -18,10 +18,14 @@ final class Lexer {
   List<Token> lex() {
     final tokens = <Token>[];
 
+    outer:
     while (_remaining()) {
       final next = _next();
 
       switch (next) {
+        case 0:
+          tokens.add(Token(TokenKind.eof));
+          break outer;
         case 10:
           tokens.add(Token(TokenKind.newline));
           break;
@@ -46,8 +50,6 @@ final class Lexer {
           break;
       }
     }
-
-    tokens.add(Token(TokenKind.eof));
 
     return tokens;
   }
