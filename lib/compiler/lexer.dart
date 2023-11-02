@@ -56,7 +56,7 @@ final class Lexer {
     final start = _index;
     while (_remaining() && _next() == 32) {}
 
-    return Token(TokenKind.space, _getRange(start, _index));
+    return Token(TokenKind.space, _getRange(start, _index--));
   }
 
   Token _lexIdent() {
@@ -69,7 +69,7 @@ final class Lexer {
       break;
     }
 
-    final value = _getRange(start, _index);
+    final value = _getRange(start, _index--);
     return switch (value) {
       'set' => Token(TokenKind.set),
       'to' => Token(TokenKind.to),
@@ -80,7 +80,7 @@ final class Lexer {
   Token _lexString() {
     final start = _index + 1;
     final delim = _input[_index];
-    bool closed = false;
+    var closed = false;
 
     while (_remaining() && _next() != delim) {
       if (_next() == delim) {
@@ -90,7 +90,7 @@ final class Lexer {
     }
 
     if (closed) {
-      return Token(TokenKind.string, _getRange(start, _index++));
+      return Token(TokenKind.string, _getRange(start, _index));
     } else {
       return Token(TokenKind.illegal, 'Unterminated quote string');
     }
