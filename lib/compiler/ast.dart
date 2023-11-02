@@ -6,18 +6,6 @@ sealed class Expression extends Node {}
 
 sealed class Statement extends Node {}
 
-final class ExpressionStatement implements Statement {
-  final Expression expr;
-
-  const ExpressionStatement(this.expr);
-
-  @override
-  String type() => expr.type();
-
-  @override
-  String toString() => expr.toString();
-}
-
 final class Identifier implements Expression {
   final String value;
 
@@ -125,12 +113,24 @@ final class Infix implements Expression {
   String toString() => '$left $operator $right';
 }
 
+final class ExpressionStatement implements Statement {
+  final Expression expr;
+
+  const ExpressionStatement(this.expr);
+
+  @override
+  String type() => expr.type();
+
+  @override
+  String toString() => expr.toString();
+}
+
 final class SetType implements Statement {
   final Identifier name;
   final Identifier typeName;
-  final Statement? resolvedType;
+  Statement? resolvedType;
 
-  const SetType(this.name, this.typeName, [this.resolvedType]);
+  SetType(this.name, this.typeName, [this.resolvedType]);
 
   @override
   String type() => 'set type';
