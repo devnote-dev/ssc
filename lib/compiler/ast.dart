@@ -56,7 +56,20 @@ final class Call implements Expression {
   String type() => 'call';
 
   @override
-  String toString() => function.toString();
+  String toString() {
+    final buffer = StringBuffer(function)..write('(');
+
+    if (args.isNotEmpty) {
+      buffer.write(args[0].type());
+      for (final arg in args.skip(1)) {
+        buffer.writeAll([', ', arg.type()]);
+      }
+    }
+
+    buffer.write(')');
+
+    return buffer.toString();
+  }
 }
 
 enum Operator {
