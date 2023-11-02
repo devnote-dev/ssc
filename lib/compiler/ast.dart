@@ -27,7 +27,7 @@ final class Identifier implements Expression {
   String type() => 'identifier';
 
   @override
-  String toString() => value.toString();
+  String toString() => value;
 }
 
 final class StringLiteral implements Expression {
@@ -39,7 +39,11 @@ final class StringLiteral implements Expression {
   String type() => 'string';
 
   @override
-  String toString() => value;
+  String toString() {
+    final delim = value.contains('"') ? "'" : '"';
+
+    return '$delim$value$delim';
+  }
 }
 
 final class Call implements Expression {
