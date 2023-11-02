@@ -11,7 +11,7 @@ final class Parser {
   List<Statement> parse() {
     final stmts = <Statement>[];
 
-    while (true) {
+    while (_remaining()) {
       final stmt = _parse(_next());
       if (stmt == null) break;
       stmts.add(stmt);
@@ -62,9 +62,7 @@ final class Parser {
     }
 
     while (true) {
-      if (_current.kind == TokenKind.eof) {
-        throw ParseException('Unexpected End of File');
-      }
+      if (_current.kind == TokenKind.eof) break;
 
       final peek = _peek();
       if (peek == null || prec >= Precedence.from(peek.kind)) break;
@@ -111,7 +109,53 @@ final class Parser {
     return Infix(left, op, right);
   }
 
-  Expression _parseIdentifier(Token token) => Identifier(token.value!);
+  Expression _parseIdentifier(Token token) {
+    var peek = _peek();
+    if (peek == null) return Identifier(token.value!);
+
+    while (peek!.kind == TokenKind.space) {
+      _index++;
+      peek = _peek();
+    }
+
+    if (peek.kind == TokenKind.newline || peek.kind == TokenKind.eof) {
+      return Identifier(token.value!);
+    }
+
+    return _parseCall(token);
+  }
+
+  Expression _parseCall(Token token) {
+    final args = <Expression>[];
+    // final named = <String, Expression>{};
+    // var usedWith = false;
+
+    var next = _nextNoSpace();
+    args.add(_parseExpression(Precedence.lowest));
+
+    next = _nextNoSpace();
+    if (next.kind != TokenKind.comma) {
+      return Call(Identifier(token.value!), args);
+    }
+
+    outer:
+    while (_remaining()) {
+      if (_current.kind != TokenKind.comma) break;
+
+      switch (_nextNoSpace()) {
+        case Token(kind: TokenKind.eof):
+          break outer;
+        case Token(kind: TokenKind.space) || Token(kind: TokenKind.newline):
+          continue;
+        default:
+          args.add(_parseExpression(Precedence.lowest));
+          _index++;
+          break;
+      }
+    }
+
+    return Call(Identifier(token.value!), args);
+  }
 
   Expression _parseString(Token token) => StringLiteral(token.value!);
 
@@ -122,7 +166,7 @@ final class Parser {
 
   Token _nextNoSpace() {
     var next = _next();
-    while (next.kind == TokenKind.space || next.kind == TokenKind.newline) {
+    while (next.kind == TokenKind.space) {
       next = _next();
     }
 
