@@ -28,7 +28,7 @@ final class Parser {
       };
 
   Statement _parseSet() {
-    var token = _nextNoSpace();
+    var token = _next();
     final name = switch (token.kind) {
       TokenKind.ident => _parseIdentifier(token) as Identifier,
       // TODO: maybe warn against 'set set to ...'
@@ -37,13 +37,13 @@ final class Parser {
           'Expected an identifier to set, not a ${token.kind}'),
     };
 
-    token = _nextNoSpace();
+    token = _next();
     // TODO: check if modifier is 'as' or 'to'
     if (token.kind != TokenKind.to) {
       throw ParseException("Expected keyword 'to' after 'set'");
     }
 
-    token = _nextNoSpace();
+    token = _next();
     final value = _parseExpressionStatement() as ExpressionStatement;
 
     return SetValue(name, value);
@@ -64,7 +64,7 @@ final class Parser {
     while (true) {
       if (_current.kind == TokenKind.eof) break;
 
-      final next = _nextNoSpace();
+      final next = _next();
       if (prec >= Precedence.from(next.kind)) break;
 
       final infix = _parseInfixType(next.kind, left!);
@@ -103,7 +103,7 @@ final class Parser {
       _ => throw 'unreachable',
     };
 
-    final token = _nextNoSpace();
+    final token = _next();
     final prec = Precedence.from(token.kind);
     final right = _parseExpression(prec);
 
@@ -141,10 +141,10 @@ final class Parser {
     // final named = <String, Expression>{};
     // var usedWith = false;
 
-    var next = _nextNoSpace();
+    var next = _next();
     args.add(_parseExpression(Precedence.lowest));
 
-    next = _nextNoSpace();
+    next = _next();
     if (next.kind != TokenKind.comma) {
       return Call(Identifier(token.value!), args);
     }
@@ -153,10 +153,10 @@ final class Parser {
     while (_remaining()) {
       if (_current.kind != TokenKind.comma) break;
 
-      switch (_nextNoSpace()) {
+      switch (_next()) {
         case Token(kind: TokenKind.eof):
           break outer;
-        case Token(kind: TokenKind.space) || Token(kind: TokenKind.newline):
+        case Token(kind: TokenKind.newline):
           continue;
         default:
           args.add(_parseExpression(Precedence.lowest));
@@ -180,15 +180,6 @@ final class Parser {
   Token? _peek() => _remaining() ? _input[_index + 1] : null;
   Token _next() => _input[++_index];
   bool _remaining() => _index + 1 < _input.length;
-
-  Token _nextNoSpace() {
-    var next = _next();
-    while (next.kind == TokenKind.space) {
-      next = _next();
-    }
-
-    return next;
-  }
 }
 
 final class ParseException implements Exception {
