@@ -123,7 +123,17 @@ final class Parser {
       return Identifier(token.value!);
     }
 
-    return _parseCall(token);
+    return switch (peek.kind) {
+      // TODO: add TokenKind.with
+      TokenKind.ident ||
+      TokenKind.string ||
+      TokenKind.integer ||
+      TokenKind.float ||
+      TokenKind.newline ||
+      TokenKind.eof =>
+        _parseCall(token),
+      _ => Identifier(token.value!),
+    };
   }
 
   Expression _parseCall(Token token) {
