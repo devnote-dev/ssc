@@ -118,6 +118,11 @@ enum Operator {
   multiply,
   divide;
 
+  // TODO: change to
+  // bool get comparable => this == equals || ...;
+  bool get comparable =>
+      !(this == add || this == subtract || this == multiply || this == divide);
+
   @override
   String toString() => switch (this) {
         add => '+',
