@@ -101,16 +101,13 @@ final class Call implements Expression {
 
   @override
   String toString() {
-    final buffer = StringBuffer(function)..write('(');
+    final buffer = StringBuffer(function);
 
     if (args.isNotEmpty) {
-      buffer.write(args[0].type());
-      for (final arg in args.skip(1)) {
-        buffer.writeAll([', ', arg.type()]);
-      }
+      buffer
+        ..write(' with ')
+        ..write(args.join(', '));
     }
-
-    buffer.write(')');
 
     return buffer.toString();
   }
@@ -178,7 +175,7 @@ final class SetType implements Statement {
   String type() => 'set type';
 
   @override
-  String toString() => typeName.value;
+  String toString() => 'set $name as $typeName';
 }
 
 final class SetValue implements Statement {
@@ -191,7 +188,7 @@ final class SetValue implements Statement {
   String type() => 'set value';
 
   @override
-  String toString() => value.toString();
+  String toString() => 'set $name to $value';
 }
 
 final class Parameter extends Statement {
@@ -225,7 +222,19 @@ sealed class FunctionBase extends Statement {
   FunctionBase(this.name, this.params, this.returnType);
 
   @override
-  String toString() => '$name(${params.join(', ')}) ${returnType.type()}';
+  String toString() {
+    final buffer = StringBuffer('function $name');
+
+    if (params.isNotEmpty) {
+      buffer
+        ..write(' using ')
+        ..write(params.join(', '));
+    }
+
+    buffer.write('that returns $returnType');
+
+    return buffer.toString();
+  }
 }
 
 final class FunctionType extends FunctionBase {
