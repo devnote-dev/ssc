@@ -9,10 +9,12 @@ const _operators = {
 
 final class Lexer {
   late final List<int> _input;
+  late final bool _withSpace;
   int _index = -1;
 
-  Lexer(String source) {
+  Lexer(String source, {bool withSpace = false}) {
     _input = source.runes.toList()..add(0);
+    _withSpace = withSpace;
   }
 
   List<Token> lex() {
@@ -30,7 +32,7 @@ final class Lexer {
           tokens.add(Token(TokenKind.newline));
           break;
         case 32:
-          tokens.add(_lexSpace());
+          if (_withSpace) tokens.add(_lexSpace());
           break;
         case 34 || 39:
           tokens.add(_lexString());
