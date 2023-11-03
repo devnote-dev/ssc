@@ -7,8 +7,7 @@ final class Program {
 
 final class Scope {
   final Scope? parent;
-  // final classes = <Identifier, Class>{};
-  // final functions = <Identifier, Function>{};
+  final types = <Identifier, Statement>{};
   final variables = <Identifier, Expression>{};
 
   Scope(this.parent);
@@ -21,8 +20,6 @@ sealed class Node {
 sealed class Expression extends Node {
   bool accepts(Expression other);
 }
-
-sealed class Statement extends Node {}
 
 final class Identifier implements Expression {
   final String value;
@@ -156,6 +153,8 @@ final class Infix implements Expression {
   String toString() => '$left $operator $right';
 }
 
+sealed class Statement extends Node {}
+
 final class ExpressionStatement implements Statement {
   final Expression expr;
 
@@ -193,4 +192,60 @@ final class SetValue implements Statement {
 
   @override
   String toString() => value.toString();
+}
+
+final class Parameter extends Statement {
+  final Identifier name;
+  final Identifier typeName;
+  final Expression? defaultValue;
+  final bool explicit;
+
+  Parameter(this.name, this.typeName, this.explicit, {this.defaultValue});
+
+  @override
+  String type() => 'parameter';
+
+  @override
+  String toString() {
+    final buffer = StringBuffer();
+    if (explicit) buffer.write('explicit ');
+
+    buffer.writeAll([name, ' as ', typeName]);
+    if (defaultValue != null) buffer.writeAll([' with default ', typeName]);
+
+    return buffer.toString();
+  }
+}
+
+sealed class FunctionBase extends Statement {
+  final Identifier name;
+  final List<Parameter> params;
+  final Identifier returnType;
+
+  FunctionBase(this.name, this.params, this.returnType);
+
+  @override
+  String toString() => '$name(${params.join(', ')}) ${returnType.type()}';
+}
+
+final class FunctionType extends FunctionBase {
+  final List<Statement> body;
+
+  FunctionType(
+      Identifier name, List<Parameter> params, Identifier returnType, this.body)
+      : super(name, params, returnType);
+
+  @override
+  String type() => 'function';
+}
+
+final class BuiltinType extends FunctionBase {
+  final Expression Function(List<Expression> args) call;
+
+  BuiltinType(
+      Identifier name, List<Parameter> params, Identifier returnType, this.call)
+      : super(name, params, returnType);
+
+  @override
+  String type() => 'builtin';
 }
