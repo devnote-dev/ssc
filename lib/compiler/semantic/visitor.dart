@@ -1,12 +1,17 @@
+import 'builtins.dart';
 import '../syntax/ast.dart';
 
 final class Visitor {
   late final Scope _scope;
   late final List<Statement> _input;
 
-  Visitor(Program program) {
+  Visitor(Program program, {required bool withBuiltins}) {
     _scope = program.scope;
     _input = program.statements;
+
+    if (withBuiltins) {
+      _scope.types[builtinPrint.name] = builtinPrint;
+    }
   }
 
   void visit() {
@@ -51,7 +56,10 @@ final class Visitor {
     }
   }
 
-  void _visitSetValue(SetValue stmt) => _visit(stmt.value);
+  void _visitSetValue(SetValue stmt) {
+    _visit(stmt.value);
+    _scope.variables[stmt.name] = stmt.value.expr;
+  }
 }
 
 final class VisitorException implements Exception {
