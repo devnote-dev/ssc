@@ -23,7 +23,7 @@ final class Parser {
   Statement? _parse(Token token) => switch (token.kind) {
         TokenKind.eof => null,
         TokenKind.set => _parseSet(),
-        TokenKind.space || TokenKind.newline => _parse(_next()),
+        TokenKind.newline => _parse(_next()),
         _ => _parseExpressionStatement(),
       };
 
@@ -113,11 +113,6 @@ final class Parser {
   Expression _parseIdentifier(Token token) {
     var peek = _peek();
     if (peek == null) return Identifier(token.value!);
-
-    while (peek!.kind == TokenKind.space) {
-      _index++;
-      peek = _peek();
-    }
 
     if (peek.kind == TokenKind.newline || peek.kind == TokenKind.eof) {
       return Identifier(token.value!);
