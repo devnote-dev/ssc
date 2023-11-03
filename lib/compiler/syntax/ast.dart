@@ -18,10 +18,8 @@ sealed class Node {
   String type();
 }
 
-sealed class Expression extends Node {}
-
-extension Accept on Expression {
-  bool accepts(Expression other) => false;
+sealed class Expression extends Node {
+  bool accepts(Expression other);
 }
 
 sealed class Statement extends Node {}
@@ -35,6 +33,9 @@ final class Identifier implements Expression {
   String type() => 'identifier';
 
   @override
+  bool accepts(Expression other) => false;
+
+  @override
   String toString() => value;
 }
 
@@ -46,6 +47,7 @@ final class StringLiteral implements Expression {
   @override
   String type() => 'string';
 
+  @override
   bool accepts(Expression other) => other.type() == 'string';
 
   @override
@@ -64,6 +66,7 @@ final class IntegerLiteral implements Expression {
   @override
   String type() => 'integer';
 
+  @override
   bool accepts(Expression other) =>
       other.type() == 'integer' || other.type() == 'float';
 
@@ -79,6 +82,7 @@ final class FloatLiteral implements Expression {
   @override
   String type() => 'float';
 
+  @override
   bool accepts(Expression other) =>
       other.type() == 'float' || other.type() == 'integer';
 
@@ -94,6 +98,9 @@ final class Call implements Expression {
 
   @override
   String type() => 'call';
+
+  @override
+  bool accepts(Expression other) => false;
 
   @override
   String toString() {
@@ -141,6 +148,9 @@ final class Infix implements Expression {
 
   @override
   String type() => 'infix';
+
+  @override
+  bool accepts(Expression other) => false;
 
   @override
   String toString() => '$left $operator $right';
