@@ -1,5 +1,6 @@
-import 'package:args/command_runner.dart';
+import 'dart:io';
 
+import 'package:args/command_runner.dart';
 import 'package:ssc/ssc.dart';
 
 final class CompileCommand extends Command<int> {
@@ -12,12 +13,18 @@ final class CompileCommand extends Command<int> {
   @override
   int run() {
     if (argResults!.arguments.isEmpty) {
-      print('No arguments provided.');
+      print('Missing file argument.');
+      return 1;
+    }
+
+    final source = File(argResults!.arguments.first);
+    if (!source.existsSync()) {
+      print('File not found: ${source.path}');
       return 1;
     }
 
     // print(argResults!.arguments);
-    final lexer = Lexer(argResults!.arguments.join(' '));
+    final lexer = Lexer(source.readAsStringSync());
     final tokens = lexer.lex();
     print(tokens);
 
