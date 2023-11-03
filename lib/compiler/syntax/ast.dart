@@ -1,3 +1,19 @@
+final class Program {
+  final scope = Scope(null);
+  List<Statement> statements;
+
+  Program(this.statements);
+}
+
+final class Scope {
+  final Scope? parent;
+  // final classes = <Identifier, Class>{};
+  // final functions = <Identifier, Function>{};
+  final variables = <Identifier, Expression>{};
+
+  Scope(this.parent);
+}
+
 sealed class Node {
   String type();
 }

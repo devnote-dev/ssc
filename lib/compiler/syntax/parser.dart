@@ -8,7 +8,7 @@ final class Parser {
 
   Parser(this._input);
 
-  List<Statement> parse() {
+  Program parse() {
     final stmts = <Statement>[];
 
     while (_remaining()) {
@@ -17,7 +17,7 @@ final class Parser {
       stmts.add(stmt);
     }
 
-    return stmts;
+    return Program(stmts);
   }
 
   Statement? _parse(Token token) => switch (token.kind) {
