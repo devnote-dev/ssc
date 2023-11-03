@@ -1,50 +1,64 @@
 import '../syntax/ast.dart';
 
 final class Visitor {
-  final List<Statement> _input;
-  int _index = -1;
+  late final Scope _scope;
+  late final List<Statement> _input;
 
-  Visitor(this._input);
-
-  List<Statement> visit() {
-    final stmts = <Statement>[];
-
-    while (_remaining()) {
-      stmts.add(_visit(_next()));
-    }
-
-    return stmts;
+  Visitor(Program program) {
+    _scope = program.scope;
+    _input = program.statements;
   }
 
-  Statement _visit(Statement stmt) => switch (stmt) {
+  void visit() {
+    for (final stmt in _input) {
+      _visit(stmt);
+    }
+  }
+
+  void _visit(Statement stmt) => switch (stmt) {
         ExpressionStatement(expr: Identifier expr) => _visitIdentifier(expr),
         ExpressionStatement(expr: Call expr) => _visitCall(expr),
         ExpressionStatement(expr: Infix expr) => _visitInfix(expr),
-        SetType st => _visitSetType(st),
+        SetValue st => _visitSetValue(st),
         _ => stmt,
       };
 
-  Statement _visitIdentifier(Identifier expr) {
-    // TODO: check if this is a variable or function call
-    throw 'not implemented';
+  void _visitIdentifier(Identifier expr) {
+    if (!_scope.variables.containsKey(expr)) {
+      throw VisitorException('Undefined variable or type: $expr');
+    }
   }
 
-  Statement _visitCall(Call expr) {
-    // TODO: function table lookup stuff
-    throw 'not implemented';
+  // TODO: requires 'Function'
+  void _visitCall(Call expr) {}
+
+  void _visitInfix(Infix expr) {
+    if (!expr.operator.comparable) {
+      if (!expr.left.accepts(expr.right)) {
+        throw VisitorException(
+            'Cannot ${expr.operator} types ${expr.left.type()} and ${expr.right.type()}');
+      }
+    }
+
+    switch (expr.left.type()) {
+      case 'string':
+        if (expr.operator != Operator.add) {
+          throw VisitorException(
+              'Operation ${expr.operator} not supported for type string');
+        }
+        break;
+      // case 'array': ...
+    }
   }
 
-  Statement _visitInfix(Infix expr) {
-    // TODO: do the other stuff first
-    throw 'not implemented';
-  }
+  void _visitSetValue(SetValue stmt) => _visit(stmt.value);
+}
 
-  Statement _visitSetType(SetType stmt) {
-    if (stmt.resolvedType != null) return stmt;
-    // TODO: type table lookup stuff
-    throw 'not implemented';
-  }
+final class VisitorException implements Exception {
+  final String message;
 
-  Statement _next() => _input[++_index];
-  bool _remaining() => _index + 1 < _input.length;
+  const VisitorException(this.message);
+
+  @override
+  String toString() => message;
 }
