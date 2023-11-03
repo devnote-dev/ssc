@@ -23,7 +23,7 @@ final class CompileCommand extends Command<int> {
 
     final parser = Parser(tokens);
     final program = parser.parse();
-    Visitor(program).visit();
+    Visitor(program, withBuiltins: true).visit();
 
     print(program.statements);
 
