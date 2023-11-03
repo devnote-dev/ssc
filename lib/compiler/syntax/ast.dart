@@ -20,6 +20,10 @@ sealed class Node {
 
 sealed class Expression extends Node {}
 
+extension Accept on Expression {
+  bool accepts(Expression other) => false;
+}
+
 sealed class Statement extends Node {}
 
 final class Identifier implements Expression {
@@ -42,6 +46,8 @@ final class StringLiteral implements Expression {
   @override
   String type() => 'string';
 
+  bool accepts(Expression other) => other.type() == 'string';
+
   @override
   String toString() {
     final delim = value.contains('"') ? "'" : '"';
@@ -58,6 +64,9 @@ final class IntegerLiteral implements Expression {
   @override
   String type() => 'integer';
 
+  bool accepts(Expression other) =>
+      other.type() == 'integer' || other.type() == 'float';
+
   @override
   String toString() => value.toString();
 }
@@ -69,6 +78,9 @@ final class FloatLiteral implements Expression {
 
   @override
   String type() => 'float';
+
+  bool accepts(Expression other) =>
+      other.type() == 'float' || other.type() == 'integer';
 
   @override
   String toString() => value.toString();
