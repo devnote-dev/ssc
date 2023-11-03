@@ -125,10 +125,10 @@ enum Operator {
 
   @override
   String toString() => switch (this) {
-        add => '+',
-        subtract => '-',
-        multiply => '*',
-        divide => '/',
+        add => 'add',
+        subtract => 'subtract',
+        multiply => 'multiply',
+        divide => 'divide',
       };
 }
 
