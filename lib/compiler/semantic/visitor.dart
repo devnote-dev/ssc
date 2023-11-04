@@ -25,7 +25,7 @@ final class Visitor {
         ExpressionStatement(expr: Call expr) => _visitCall(expr),
         ExpressionStatement(expr: Infix expr) => _visitInfix(expr),
         SetValue st => _visitSetValue(st),
-        _ => stmt,
+        _ => (),
       };
 
   void _visitIdentifier(Identifier expr) {
@@ -34,8 +34,41 @@ final class Visitor {
     }
   }
 
-  // TODO: requires 'Function'
-  void _visitCall(Call expr) {}
+  void _visitCall(Call expr) {
+    var func = _scope.types[expr.function];
+    if (func == null) {
+      throw VisitorException("Undefined function '${expr.function}'");
+    }
+
+    if (func.type() != 'function' && func.type() != 'builtin') {
+      throw VisitorException('Cannot call type ${func.type()} as a function');
+    }
+
+    func = func as FunctionBase;
+    if (expr.args.length != func.params.length) {
+      final buffer = StringBuffer("Function '${func.name}' takes ");
+
+      if (func.params.isEmpty) {
+        buffer.write('no');
+      } else {
+        buffer.write(func.params.length);
+      }
+
+      buffer.write(' arguments but was given ${expr.args.length}');
+      throw VisitorException(buffer.toString());
+    }
+
+    for (var i = 0; i < func.params.length; i++) {
+      final expected = func.params[i];
+      final got = expr.args[i];
+
+      // ignore: unrelated_type_equality_checks
+      if (expected.typeName != got.type()) {
+        throw VisitorException(
+            'Expected parameter ${i + 1} to be type ${expected.typeName}, not type ${got.type()}');
+      }
+    }
+  }
 
   void _visitInfix(Infix expr) {
     if (!expr.operator.comparable) {
