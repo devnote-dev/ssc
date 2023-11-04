@@ -26,7 +26,7 @@ final class CompileCommand extends Command<int> {
     // print(argResults!.arguments);
     final lexer = Lexer(source.readAsStringSync());
     final tokens = lexer.lex();
-    print(tokens);
+    // print(tokens);
 
     final parser = Parser(tokens);
     final program = parser.parse();
