@@ -223,15 +223,13 @@ sealed class FunctionBase extends Statement {
 
   @override
   String toString() {
-    final buffer = StringBuffer('function $name');
+    final buffer = StringBuffer('function $name that returns $returnType');
 
     if (params.isNotEmpty) {
       buffer
         ..write(' using ')
         ..write(params.join(', '));
     }
-
-    buffer.write(' that returns $returnType');
 
     return buffer.toString();
   }
