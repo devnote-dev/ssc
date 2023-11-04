@@ -231,7 +231,7 @@ sealed class FunctionBase extends Statement {
         ..write(params.join(', '));
     }
 
-    buffer.write('that returns $returnType');
+    buffer.write(' that returns $returnType');
 
     return buffer.toString();
   }
