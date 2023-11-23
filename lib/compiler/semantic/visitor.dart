@@ -5,13 +5,11 @@ final class Visitor {
   late final Scope _scope;
   late final List<Statement> _input;
 
-  Visitor(Program program, {required bool withBuiltins}) {
+  Visitor(Program program) {
     _scope = program.scope;
     _input = program.statements;
 
-    if (withBuiltins) {
-      _scope.types[builtinPrint.name] = builtinPrint;
-    }
+    _scope.types[builtinPrint.name] = builtinPrint;
   }
 
   void visit() {
