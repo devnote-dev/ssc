@@ -6,7 +6,8 @@ final _printParams = List.generate(
         Parameter(Identifier('value$index'), Identifier('anything'), false));
 
 final builtinPrint = BuiltinType(
-    Identifier('print'), _printParams, Identifier('integer'), (args) {
+    const Identifier('print'), _printParams, const Identifier('integer'),
+    (args) {
   print(args.join(' '));
   return IntegerLiteral(0);
 });
