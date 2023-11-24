@@ -33,6 +33,15 @@ final class Identifier implements Expression {
   bool accepts(Expression other) => false;
 
   @override
+  bool operator ==(Object other) {
+    if (other is! Identifier) return false;
+    return value == other.value;
+  }
+
+  @override
+  int get hashCode => value.hashCode;
+
+  @override
   String toString() => value;
 }
 
@@ -46,6 +55,15 @@ final class StringLiteral implements Expression {
 
   @override
   bool accepts(Expression other) => other.type() == 'string';
+
+  @override
+  bool operator ==(Object other) {
+    if (other is! StringLiteral) return false;
+    return value == other.value;
+  }
+
+  @override
+  int get hashCode => value.hashCode;
 
   @override
   String toString() {
@@ -68,6 +86,15 @@ final class IntegerLiteral implements Expression {
       other.type() == 'integer' || other.type() == 'float';
 
   @override
+  bool operator ==(Object other) {
+    if (other is! IntegerLiteral) return false;
+    return value == other.value;
+  }
+
+  @override
+  int get hashCode => value.hashCode;
+
+  @override
   String toString() => value.toString();
 }
 
@@ -84,6 +111,15 @@ final class FloatLiteral implements Expression {
       other.type() == 'float' || other.type() == 'integer';
 
   @override
+  bool operator ==(Object other) {
+    if (other is! FloatLiteral) return false;
+    return value == other.value;
+  }
+
+  @override
+  int get hashCode => value.hashCode;
+
+  @override
   String toString() => value.toString();
 }
 
@@ -98,6 +134,15 @@ final class Call implements Expression {
 
   @override
   bool accepts(Expression other) => false;
+
+  @override
+  bool operator ==(Object other) {
+    if (other is! Call) return false;
+    return function == other.function && args == other.args;
+  }
+
+  @override
+  int get hashCode => function.hashCode ^ args.hashCode;
 
   @override
   String toString() {
@@ -145,6 +190,17 @@ final class Infix implements Expression {
 
   @override
   bool accepts(Expression other) => false;
+
+  @override
+  bool operator ==(Object other) {
+    if (other is! Infix) return false;
+    return operator == other.operator &&
+        left == other.left &&
+        right == other.right;
+  }
+
+  @override
+  int get hashCode => left.hashCode ^ operator.hashCode ^ right.hashCode;
 
   @override
   String toString() => '$left $operator $right';
