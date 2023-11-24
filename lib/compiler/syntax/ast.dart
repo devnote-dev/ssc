@@ -312,3 +312,26 @@ final class BuiltinType extends FunctionBase {
   @override
   String type() => 'builtin';
 }
+
+final class Type implements Statement {
+  final Identifier name;
+  final String _kind;
+  List<FunctionType> methods;
+
+  Type(this.name, this._kind, this.methods);
+
+  bool get isModule => _kind == 'module';
+  bool get isClass => _kind == 'class';
+
+  @override
+  String type() => name.toString();
+
+  @override
+  bool operator ==(Object other) {
+    if (other is! Type) return false;
+    return name == other.name && _kind == other._kind;
+  }
+
+  @override
+  int get hashCode => name.hashCode ^ _kind.hashCode;
+}
