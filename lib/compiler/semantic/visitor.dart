@@ -1,5 +1,6 @@
 import 'builtins.dart';
 import '../syntax/ast.dart';
+import '../exceptions.dart' show VisitorException;
 
 final class Visitor {
   late final Scope _scope;
@@ -91,13 +92,4 @@ final class Visitor {
     _visit(stmt.value);
     _scope.variables[stmt.name] = stmt.value.expr;
   }
-}
-
-final class VisitorException implements Exception {
-  final String message;
-
-  const VisitorException(this.message);
-
-  @override
-  String toString() => message;
 }

@@ -1,5 +1,6 @@
 import 'ast.dart';
 import 'token.dart';
+import '../exceptions.dart' show ParseException;
 
 final class Parser {
   final List<Token> _input;
@@ -175,13 +176,4 @@ final class Parser {
   Token? _peek() => _remaining() ? _input[_index + 1] : null;
   Token _next() => _input[++_index];
   bool _remaining() => _index + 1 < _input.length;
-}
-
-final class ParseException implements Exception {
-  final String message;
-
-  const ParseException(this.message);
-
-  @override
-  String toString() => message;
 }
