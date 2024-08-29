@@ -1,0 +1,9 @@
+/docs/
+/lib/
+/bin/
+/test/
+/.shards/
+
+*.cmd
+*.dwarf
+*.sh

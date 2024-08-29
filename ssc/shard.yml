@@ -1,0 +1,11 @@
+name: ssc
+authors:
+  - Devonte W <https://github.com/devnote-dev>
+
+version: 0.1.0
+crystal: '>= 1.13.2'
+license: MPL-2.0
+
+development_dependencies:
+  ameba:
+    github: crystal-ameba/ameba
